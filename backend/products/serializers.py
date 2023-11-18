@@ -7,6 +7,7 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = [
+            'id',
             'title',
             'content',
             'price',
@@ -14,9 +15,16 @@ class ProductSerializer(serializers.ModelSerializer):
             'my_discount',
             'my_raise'
         ]
-    
+
     def get_my_discount(self, obj):
-        return obj.get_discount()
-    
+        if not hasattr(obj, "id"):
+            return None
+        if not isinstance(obj, Product):
+            return None
+        return float(obj.price) * 0.8
+
     def get_my_raise(self, obj):
-        return float(obj.price) * 1.2
+        try:
+            return float(obj.price) * 1.2
+        except:
+            return None
